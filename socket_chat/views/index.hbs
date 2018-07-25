@@ -1,0 +1,46 @@
+<section class="container">
+  <h1 class="center">Socket.IO Examples</h1>
+
+  <div class="row">
+    <div class="col-md-6 box">
+      <div id="textbox" class="textbox">
+      </div>
+      <div class="inputbox block">
+        <input class="inline typebox" id="message" type="text" placeholder="Say Something...">
+        <button id="sendButton"class="inline submitbutton">Send</button>
+        <input class="inline typebox" id="username" type="text" placeholder="What is your username?">
+        <button id="nameButton"class="inline submitbutton">Submit</button>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script type='text/javascript'>
+  var socket = io('localhost:3001');
+  socket.on('connect', function() {
+    console.log('Connected!');
+  });
+  //send click handler
+  $('#sendButton').click(function(){
+    var msg = $('#message').val();
+    $('#message').val('');
+    console.log(msg);
+    socket.emit('message', msg);
+  });
+
+  socket.on('joinedRoom', function(newUser){
+      $('#textbox').append('<div style="color: red">' + newUser + ' has joined the room!' + '</div>');
+  })
+
+  $('#nameButton').click(function(){
+    var username = $('#username').val();
+    $('#username').val('');
+    socket.emit('username', username)
+  })
+  //listen for serverMessage
+  socket.on('serverMessage', function(serverMsg){
+    $('#textbox').append('<div>' + serverMsg + '</div>');
+  })
+
+</script>
